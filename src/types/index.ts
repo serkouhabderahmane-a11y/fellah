@@ -33,11 +33,19 @@ export interface Listing {
   createdAt: string;
   featured: boolean;
   type: 'sale' | 'rent';
-  status: 'active' | 'pending' | 'sold' | 'expired';
+  status: 'active' | 'pending' | 'sold' | 'expired' | 'rejected';
   contactName: string;
   contactPhone: string;
   views: number;
   favorites: number;
+  isAuction?: boolean;
+  startingPrice?: number;
+  currentBid?: number;
+  auctionEndTime?: string;
+  bidCount?: number;
+  requiredInvestment?: number;
+  expectedReturn?: number;
+  duration?: string;
 }
 
 export interface User {
@@ -51,7 +59,20 @@ export interface User {
   avatar?: string;
   bio?: string;
   location?: string;
+  plan: 'free' | 'pro' | 'enterprise';
 }
+
+export const PLAN_LIMITS = {
+  free: 3,
+  pro: 20,
+  enterprise: Infinity,
+} as const;
+
+export const PLAN_INFO = {
+  free: { nameAr: 'مجاني', nameFr: 'Gratuit', color: 'gray', price: 0 },
+  pro: { nameAr: 'احترافي', nameFr: 'Pro', color: 'blue', price: 199 },
+  enterprise: { nameAr: 'مؤسسات', nameFr: 'Entreprise', color: 'purple', price: 499 },
+} as const;
 
 export interface ChatMessage {
   id: string;
@@ -107,3 +128,43 @@ export interface Notification {
 }
 
 export type Locale = 'ar' | 'fr';
+
+export interface Review {
+  id: string;
+  reviewerId: string;
+  reviewerName: string;
+  reviewerAvatar?: string;
+  sellerId: string;
+  listingId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface Bid {
+  id: string;
+  listingId: string;
+  bidderId: string;
+  bidderName: string;
+  amount: number;
+  createdAt: string;
+}
+
+export interface Job {
+  id: string;
+  title: string;
+  titleAr: string;
+  description: string;
+  descriptionAr: string;
+  location: string;
+  locationAr: string;
+  salary?: number;
+  salaryType?: 'monthly' | 'daily' | 'seasonal';
+  jobType: 'offer' | 'request';
+  category: 'farming' | 'livestock' | 'equipment' | 'management' | 'processing' | 'other';
+  status: 'active' | 'filled' | 'expired';
+  contactName: string;
+  contactPhone: string;
+  createdAt: string;
+  views: number;
+}

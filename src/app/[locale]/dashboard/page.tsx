@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAppStore } from '@/store';
 import { categories } from '@/data/categories';
-import { Listing, Message, User } from '@/types';
+import { Listing, Message, User, PLAN_LIMITS, PLAN_INFO } from '@/types';
+import { Icons } from '@/components/ui/Icons';
 
 type TabType = 'listings' | 'messages' | 'favorites' | 'profile' | 'settings';
 
@@ -541,6 +542,17 @@ function ProfileTab({ user, locale, isRTL, onUpdateProfile, stats }: ProfileTabP
   const [bio, setBio] = useState(user?.bio || '');
   const [location, setLocation] = useState(user?.location || 'المغرب');
 
+  const { canCreateListing, updateUserPlan } = useAppStore();
+  const { allowed, remaining, limit } = canCreateListing();
+  const currentPlan = user?.plan || 'free';
+  const planInfo = PLAN_INFO[currentPlan];
+
+  const planColors = {
+    free: 'from-gray-400 to-gray-500',
+    pro: 'from-blue-500 to-blue-600',
+    enterprise: 'from-purple-500 to-purple-600',
+  };
+
   const handleSave = () => {
     onUpdateProfile({ name, email, phone, bio, location });
     alert(isRTL ? 'تم تحديث الملف الشخصي بنجاح!' : 'Profil mis à jour avec succès!');
@@ -551,6 +563,69 @@ function ProfileTab({ user, locale, isRTL, onUpdateProfile, stats }: ProfileTabP
       <h2 className="text-xl font-bold text-gray-800 mb-6">
         {isRTL ? 'الملف الشخصي' : 'Profil'}
       </h2>
+
+      <div className={`bg-gradient-to-r ${planColors[currentPlan]} rounded-2xl p-6 mb-8 text-white`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-white/80 text-sm mb-1">{isRTL ? 'خطتك الحالية' : 'Votre plan actuel'}</p>
+            <h3 className="text-2xl font-bold">{isRTL ? planInfo.nameAr : planInfo.nameFr}</h3>
+            <p className="text-white/80 mt-1">
+              {currentPlan === 'free' && (isRTL ? 'ابدأ مجاناً مع 3 إعلانات' : 'Commencez gratuitement avec 3 annonces')}
+              {currentPlan === 'pro' && (isRTL ? 'احصل على 20 إعلان' : 'Obtenez 20 annonces')}
+              {currentPlan === 'enterprise' && (isRTL ? 'إعلانات غير محدودة' : 'Annonces illimitées')}
+            </p>
+          </div>
+          <div className="text-left">
+            <div className="text-3xl font-bold">{currentPlan === 'free' ? '0' : currentPlan === 'pro' ? '199' : '499'} MAD</div>
+            <div className="text-white/80 text-sm">{isRTL ? '/شهرياً' : '/mois'}</div>
+          </div>
+        </div>
+        
+        <div className="mt-6">
+          <div className="flex items-center justify-between text-sm mb-2">
+            <span>{isRTL ? 'الإعلانات المستخدمة' : 'Annonces utilisées'}</span>
+            <span>{stats.totalListings} / {limit === Infinity ? '∞' : limit}</span>
+          </div>
+          <div className="w-full bg-white/20 rounded-full h-2">
+            <div 
+              className="bg-white rounded-full h-2 transition-all"
+              style={{ width: `${limit === Infinity ? 100 : Math.min((stats.totalListings / limit) * 100, 100)}%` }}
+            />
+          </div>
+          {remaining > 0 && (
+            <p className="text-sm mt-2 text-white/80">
+              {isRTL ? `يمكنك إضافة ${remaining} إعلان آخر` : `Vous pouvez encore ajouter ${remaining} annonce(s)`}
+            </p>
+          )}
+        </div>
+
+        <div className="mt-6 flex gap-3">
+          {currentPlan !== 'pro' && (
+            <button
+              onClick={() => updateUserPlan('pro')}
+              className="flex-1 py-2 px-4 bg-white text-blue-600 rounded-xl font-medium text-sm hover:bg-blue-50 transition-colors"
+            >
+              {isRTL ? 'الترقية إلى احترافي' : 'Passer à Pro'}
+            </button>
+          )}
+          {currentPlan !== 'enterprise' && currentPlan === 'pro' && (
+            <button
+              onClick={() => updateUserPlan('enterprise')}
+              className="flex-1 py-2 px-4 bg-white text-purple-600 rounded-xl font-medium text-sm hover:bg-purple-50 transition-colors"
+            >
+              {isRTL ? 'الترقية إلى مؤسسات' : 'Passer à Entreprise'}
+            </button>
+          )}
+          {currentPlan === 'free' && (
+            <button
+              onClick={() => updateUserPlan('pro')}
+              className="flex-1 py-2 px-4 bg-white/10 border border-white/30 text-white rounded-xl font-medium text-sm hover:bg-white/20 transition-colors"
+            >
+              {isRTL ? 'مقارنة الخطط' : 'Comparer les plans'}
+            </button>
+          )}
+        </div>
+      </div>
 
       <div className="flex items-center gap-6 mb-8">
         <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary-light rounded-full flex items-center justify-center">

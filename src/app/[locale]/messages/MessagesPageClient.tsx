@@ -220,7 +220,7 @@ export default function MessagesPage({ locale }: MessagesPageProps) {
                       {getOtherParticipant(selectedConversation)?.name}
                     </h3>
                     <Link 
-                      href={`/listing/${selectedConversation.listingId}`}
+                      href={`/${locale}/listing/${selectedConversation.listingId}`}
                       className="text-sm text-primary hover:underline flex items-center gap-1"
                     >
                       <Icons.ExternalLink className="w-3 h-3" />
