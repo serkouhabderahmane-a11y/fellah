@@ -2,20 +2,24 @@
 
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useCallback } from 'react';
 import { Icons } from '@/components/ui/Icons';
 
-export default function Footer() {
+type Locale = 'ar' | 'fr';
+
+interface FooterProps {
+  locale: Locale;
+}
+
+export default function Footer({ locale }: FooterProps) {
   const t = useTranslations('footer');
   const tNav = useTranslations('nav');
-  const pathname = usePathname();
-  const isRTL = pathname.startsWith('/ar');
-  const currentLang = pathname.startsWith('/ar') ? 'ar' : 'fr';
+  const isRTL = locale === 'ar';
 
-  const getLink = (path: string) => {
-    if (path === '/') return `/${currentLang}`;
-    return `/${currentLang}${path}`;
-  };
+  const getLink = useCallback((path: string) => {
+    if (path === '/') return `/${locale}`;
+    return `/${locale}${path}`;
+  }, [locale]);
 
   return (
     <footer className="bg-primary text-white">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+
 import { Cairo, Montserrat } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -8,21 +8,19 @@ import "../globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
+type Locale = 'ar' | 'fr';
+
 const cairo = Cairo({
   subsets: ["arabic"],
   variable: "--font-cairo",
+  display: "swap",
 });
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
 });
-
-export const metadata: Metadata = {
-  title: "FellahSouq - سوق الفلاح | أكبر منصة زراعية في المغرب",
-  description: "منصة سوق الفلاح هي أكبر منصة زراعية في المغرب، نربط المزارعين والمستثمرين والمشترين. شراء وبيع الأراضي الزراعية، المعدات، المنتجات، والماشية.",
-  keywords: "agriculture, Morocco, farming, marketplace, فلاحة, المغرب, زراعة",
-};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -35,23 +33,25 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
   
-  if (!routing.locales.includes(locale as typeof routing.locales[number])) {
+  if (!routing.locales.includes(rawLocale as typeof routing.locales[number])) {
     notFound();
   }
 
+  const locale = rawLocale as Locale;
   const messages = await getMessages();
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className={`${cairo.variable} ${montserrat.variable} font-arabic min-h-screen flex flex-col`}>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
+      <body className={`${cairo.variable} ${montserrat.variable} font-arabic min-h-screen flex flex-col antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <Header />
+          <Header locale={locale} />
           <main className="flex-1 pt-20">
             {children}
           </main>
-          <Footer />
+          <Footer locale={locale} />
         </NextIntlClientProvider>
       </body>
     </html>

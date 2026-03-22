@@ -1,20 +1,5 @@
 import type { Metadata } from "next";
-import { Cairo, Montserrat } from "next/font/google";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-
-const cairo = Cairo({
-  subsets: ["arabic"],
-  variable: "--font-cairo",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-});
 
 export const metadata: Metadata = {
   title: "FellahSouq - سوق الفلاح | أكبر منصة زراعية في المغرب",
@@ -22,24 +7,10 @@ export const metadata: Metadata = {
   keywords: "agriculture, Morocco, farming, marketplace, فلاحة, المغرب, زراعة",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const messages = await getMessages();
-
-  return (
-    <html lang="ar" dir="rtl">
-      <body className={`${cairo.variable} ${montserrat.variable} font-arabic min-h-screen flex flex-col`}>
-        <NextIntlClientProvider messages={messages}>
-          <Header />
-          <main className="flex-1 pt-20">
-            {children}
-          </main>
-          <Footer />
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+  return children;
 }

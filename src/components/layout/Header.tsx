@@ -2,26 +2,31 @@
 
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import { categories } from '@/data/categories';
 
-export default function Header() {
+type Locale = 'ar' | 'fr';
+
+interface HeaderProps {
+  locale: Locale;
+}
+
+export default function Header({ locale }: HeaderProps) {
   const t = useTranslations('nav');
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const isRTL = pathname.startsWith('/ar');
-  const currentLang = pathname.startsWith('/ar') ? 'ar' : 'fr';
+  const isRTL = locale === 'ar';
 
-  const getLink = (path: string) => {
-    if (path === '/') return `/${currentLang}`;
-    return `/${currentLang}${path}`;
-  };
+  const getLink = useCallback((path: string) => {
+    if (path === '/') return `/${locale}`;
+    return `/${locale}${path}`;
+  }, [locale]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,11 +36,20 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const switchLanguage = (lang: string) => {
+  const switchLanguage = useCallback((newLocale: Locale) => {
     const path = pathname.replace(/^\/(ar|fr)/, '');
-    router.push(`/${lang}${path || '/'}`);
+    router.push(`/${newLocale}${path || '/'}`);
     setIsLangOpen(false);
-  };
+  }, [pathname, router]);
+
+  useEffect(() => {
+    const closeMenus = () => {
+      setIsMenuOpen(false);
+      setIsCategoryOpen(false);
+      setIsLangOpen(false);
+    };
+    closeMenus();
+  }, [pathname]);
 
   const categoryEmojis: Record<string, string> = {
     'agricultural-lands': '🌾',
@@ -87,7 +101,7 @@ export default function Header() {
                 }`}
               >
                 {t('categories')}
-                <svg className={`w-4 h-4 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-4 h-4 transition-transform ${isRTL ? 'rtl:rotate-180' : ''} ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -138,29 +152,37 @@ export default function Header() {
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                 </svg>
-                <span className="hidden sm:inline">{currentLang === 'ar' ? 'العربية' : 'Français'}</span>
+                <span className="hidden sm:inline">{locale === 'ar' ? 'العربية' : 'Français'}</span>
               </button>
               {isLangOpen && (
-                <div className="absolute end-0 mt-2 bg-white shadow-xl rounded-xl py-1 min-w-32 border overflow-hidden">
+                <div className={`absolute ${isRTL ? 'left-0' : 'right-0'} top-full mt-2 bg-white shadow-xl rounded-xl py-1 min-w-36 border overflow-hidden`}>
                   <button 
                     onClick={() => switchLanguage('ar')}
-                    className={`w-full text-start px-4 py-2.5 font-medium transition-colors ${
-                      currentLang === 'ar' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-50'
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 font-medium transition-colors ${
+                      locale === 'ar' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    🇸🇦 العربية
+                    <span>🇸🇦</span>
+                    <span>العربية</span>
                   </button>
                   <button 
                     onClick={() => switchLanguage('fr')}
-                    className={`w-full text-start px-4 py-2.5 font-medium transition-colors ${
-                      currentLang === 'fr' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-50'
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 font-medium transition-colors ${
+                      locale === 'fr' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    🇫🇷 Français
+                    <span>🇫🇷</span>
+                    <span>Français</span>
                   </button>
                 </div>
               )}
             </div>
+
+            <Link href={getLink("/favorites")} className="relative p-2 rounded-xl text-gray-600 hover:text-primary hover:bg-gray-50 transition-all" title={isRTL ? 'المفضلة' : 'Favoris'}>
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </Link>
 
             <Link href={getLink("/login")} className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -171,7 +193,7 @@ export default function Header() {
             
             <Link href={getLink("/register")} className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
               {t('register')}
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className={`w-4 h-4 ${isRTL ? 'rtl:flip' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </Link>
@@ -180,7 +202,14 @@ export default function Header() {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
               </svg>
-              لوحة التحكم
+              {t('dashboard')}
+            </Link>
+            
+            <Link href={getLink("/create-listing")} className="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              {t('addListing')}
             </Link>
 
             <button 

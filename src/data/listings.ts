@@ -1,5 +1,11 @@
 import { Listing } from '@/types';
 
+const generateStats = (index: number) => ({
+  status: ['active', 'active', 'pending', 'sold'][index % 4] as 'active' | 'pending' | 'sold' | 'expired',
+  views: Math.floor(Math.random() * 500) + 50,
+  favorites: Math.floor(Math.random() * 30) + 5,
+});
+
 export const sampleListings: Listing[] = [
   {
     id: '1',
@@ -17,7 +23,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'أحمد محمد',
-    contactPhone: '+212 661 123 456'
+    contactPhone: '+212 661 123 456',
+    ...generateStats(0),
   },
   {
     id: '2',
@@ -35,7 +42,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'علي يوسف',
-    contactPhone: '+212 662 234 567'
+    contactPhone: '+212 662 234 567',
+    ...generateStats(1),
   },
   {
     id: '3',
@@ -53,7 +61,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'كريم الغزال',
-    contactPhone: '+212 663 345 678'
+    contactPhone: '+212 663 345 678',
+    ...generateStats(2),
   },
   {
     id: '4',
@@ -71,7 +80,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'سعيد البحري',
-    contactPhone: '+212 664 456 789'
+    contactPhone: '+212 664 456 789',
+    ...generateStats(3),
   },
   {
     id: '5',
@@ -89,7 +99,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'رشيد العمراني',
-    contactPhone: '+212 665 567 890'
+    contactPhone: '+212 665 567 890',
+    ...generateStats(4),
   },
   {
     id: '6',
@@ -107,7 +118,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'rent',
     contactName: 'مصطفى الريسوني',
-    contactPhone: '+212 666 678 901'
+    contactPhone: '+212 666 678 901',
+    ...generateStats(5),
   },
   {
     id: '7',
@@ -125,7 +137,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'حميد الشباني',
-    contactPhone: '+212 667 789 012'
+    contactPhone: '+212 667 789 012',
+    ...generateStats(6),
   },
   {
     id: '8',
@@ -143,7 +156,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'rent',
     contactName: 'عبد السلام',
-    contactPhone: '+212 668 890 123'
+    contactPhone: '+212 668 890 123',
+    ...generateStats(7),
   },
   {
     id: '9',
@@ -161,7 +175,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'كريم الحداد',
-    contactPhone: '+212 669 901 234'
+    contactPhone: '+212 669 901 234',
+    ...generateStats(8),
   },
   {
     id: '10',
@@ -179,7 +194,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'أمين بنعبود',
-    contactPhone: '+212 670 012 345'
+    contactPhone: '+212 670 012 345',
+    ...generateStats(9),
   },
   {
     id: '11',
@@ -197,7 +213,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'عبدو الخالدي',
-    contactPhone: '+212 671 123 456'
+    contactPhone: '+212 671 123 456',
+    ...generateStats(10),
   },
   {
     id: '12',
@@ -215,7 +232,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'ياسين العلمي',
-    contactPhone: '+212 672 234 567'
+    contactPhone: '+212 672 234 567',
+    ...generateStats(11),
   },
   {
     id: '13',
@@ -233,7 +251,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'سعيد المالكي',
-    contactPhone: '+212 673 345 678'
+    contactPhone: '+212 673 345 678',
+    ...generateStats(12),
   },
   {
     id: '14',
@@ -251,7 +270,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'دكتور عمراني',
-    contactPhone: '+212 674 456 789'
+    contactPhone: '+212 674 456 789',
+    ...generateStats(13),
   },
   {
     id: '15',
@@ -269,7 +289,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'أحمد بوبكر',
-    contactPhone: '+212 675 567 890'
+    contactPhone: '+212 675 567 890',
+    ...generateStats(14),
   },
   {
     id: '16',
@@ -287,7 +308,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'رشيد أوعبد',
-    contactPhone: '+212 676 678 901'
+    contactPhone: '+212 676 678 901',
+    ...generateStats(15),
   },
   {
     id: '17',
@@ -305,7 +327,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'منير客运',
-    contactPhone: '+212 677 789 012'
+    contactPhone: '+212 677 789 012',
+    ...generateStats(16),
   },
   {
     id: '18',
@@ -323,7 +346,8 @@ export const sampleListings: Listing[] = [
     featured: true,
     type: 'sale',
     contactName: 'مصطفى أزرو',
-    contactPhone: '+212 678 890 123'
+    contactPhone: '+212 678 890 123',
+    ...generateStats(17),
   },
   {
     id: '19',
@@ -341,7 +365,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'sale',
     contactName: 'عبدو قاد',
-    contactPhone: '+212 679 901 234'
+    contactPhone: '+212 679 901 234',
+    ...generateStats(18),
   },
   {
     id: '20',
@@ -359,7 +384,8 @@ export const sampleListings: Listing[] = [
     featured: false,
     type: 'rent',
     contactName: 'ابراهيم داود',
-    contactPhone: '+212 680 012 345'
+    contactPhone: '+212 680 012 345',
+    ...generateStats(19),
   }
 ];
 
