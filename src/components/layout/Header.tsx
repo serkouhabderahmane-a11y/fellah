@@ -66,6 +66,7 @@ export default function Header({ locale }: HeaderProps) {
     { href: getLink("/listings"), label: isRTL ? 'الإعلانات' : 'Annonces', key: 'listings' },
     { href: getLink("/investment"), label: isRTL ? 'الاستثمار' : 'Investissement', key: 'investment' },
     { href: getLink("/jobs"), label: isRTL ? 'الوظائف' : 'Emplois', key: 'jobs' },
+    { href: getLink("/admin"), label: isRTL ? 'الإدارة' : 'Admin', key: 'admin', highlight: true },
   ];
 
   return (
@@ -92,7 +93,9 @@ export default function Header({ locale }: HeaderProps) {
                 key={link.key}
                 href={link.href} 
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                  pathname === link.href || (link.key === 'home' && (pathname === '/' || pathname === '/ar' || pathname === '/fr'))
+                  link.highlight
+                    ? 'bg-accent/10 text-accent hover:bg-accent/20'
+                    : pathname === link.href || (link.key === 'home' && (pathname === '/' || pathname === '/ar' || pathname === '/fr'))
                     ? 'bg-primary/10 text-primary' 
                     : 'text-gray-600 hover:text-primary hover:bg-gray-50'
                 }`}

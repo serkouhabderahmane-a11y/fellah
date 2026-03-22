@@ -91,7 +91,7 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       locale: 'ar',
       setLocale: (locale) => set({ locale }),
-      user: { id: 'user_demo', name: 'مستخدم تجريبي', email: 'user@fellahsouq.ma', phone: '+212 6XX XXX XXX', role: 'seller' as const, verified: true, createdAt: new Date().toISOString(), plan: 'free' as const },
+      user: { id: 'user_demo', name: 'مستخدم تجريبي', email: 'user@fellahsouq.ma', phone: '+212 6XX XXX XXX', role: 'admin' as const, verified: true, createdAt: new Date().toISOString(), plan: 'enterprise' as const },
       setUser: (user) => set({ user }),
       updateUserProfile: (profile) => {
         set((state) => ({
@@ -649,7 +649,7 @@ export const useAppStore = create<AppState>()(
       adminListings: [],
       
       adminUsers: [
-        { id: 'user_demo', name: 'مستخدم تجريبي', email: 'user@fellahsouq.ma', phone: '+212 6XX XXX XXX', role: 'seller', verified: true, createdAt: new Date().toISOString(), plan: 'free' },
+        { id: 'user_demo', name: 'مستخدم تجريبي', email: 'user@fellahsouq.ma', phone: '+212 6XX XXX XXX', role: 'admin', verified: true, createdAt: new Date().toISOString(), plan: 'enterprise' },
         { id: 'admin_demo', name: 'المدير', email: 'admin@fellahsouq.ma', phone: '+212 6XX XXX XXX', role: 'admin', verified: true, createdAt: new Date().toISOString(), plan: 'enterprise' },
         { id: 'user_2', name: 'أحمد محمد', email: 'ahmed@fellahsouq.ma', phone: '+212 661 123 456', role: 'seller', verified: true, createdAt: new Date().toISOString(), plan: 'pro' },
         { id: 'user_3', name: 'علي يوسف', email: 'ali@fellahsouq.ma', phone: '+212 662 234 567', role: 'buyer', verified: false, createdAt: new Date().toISOString(), plan: 'free' },
